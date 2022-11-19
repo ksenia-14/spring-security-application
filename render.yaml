@@ -2,7 +2,7 @@ version: '2'
 
 services:
   app:
-    image: 'docker-spring-boot-postgres:latest'
+    image: 'SpringSecurityApplication:latest'
     build:
       context: .
     container_name: app
