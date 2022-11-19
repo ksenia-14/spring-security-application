@@ -5,6 +5,4 @@ services:
     dockerfilePath: Dockerfile
 
 databases:
-  - name: db
-    databaseName: TestDbSpringSecurity
-    user: postgres
+  - name: TestDbSpringSecurity
