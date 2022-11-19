@@ -1,19 +1,17 @@
-version: '3.1'
+version: '3'
 services:
   app:
-    container_name: spring-security-application
-    image: spring-security-application
-    build: ./
+    image: 'spring-security-application:latest'
+    build: .
+    container_name: app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/TestDbSpringSecurity
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - "8081:8081"
+    restart: always
     depends_on:
       - db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/TestDbSpringSecurity
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=123
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
