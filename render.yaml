@@ -2,7 +2,7 @@ version: '2'
 
 services:
   app:
-    image: 'SpringSecurityApplication:latest'
+    image: 'spring-security-application:latest'
     build:
       context: .
     container_name: app
