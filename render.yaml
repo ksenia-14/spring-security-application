@@ -8,4 +8,3 @@ databases:
   - name: TestDbSpringSecurity
     databaseName: TestDbSpringSecurity
     user: postgres
-    password: 123
