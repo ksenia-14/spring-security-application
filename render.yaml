@@ -3,6 +3,7 @@ version: '3.1'
 services:
   app:
     container_name: app
+    image: 'spring-security-application:latest'
     build:
       dockerfile: Dockerfile
     depends_on:
@@ -12,7 +13,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
