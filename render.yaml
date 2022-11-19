@@ -3,9 +3,9 @@ services:
   app:
     container_name: spring-security-application
     image: spring-security-application
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./
+    ports:
+      - "8081:8081"
     depends_on:
       - db
     environment:
@@ -17,6 +17,8 @@ services:
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123
