@@ -1,22 +1,9 @@
-databases:
-  - name: TestDbSpringSecurity
-
 services:
   - type: web
     name: app
     env: docker
     dockerfilePath: Dockerfile
     plan: free
-    envVars:
-      - key: postgres://userpostgres:CBedkJcMhzd2pMRUxNGXWydt8ixhHRLr@dpg-cdscah9a6gdu24fuo9dg-a/testdb_2a0a
-        fromDatabase:
-          name: TestDbSpringSecurity
-          property: connectionString
-      - key: POOL_MODE
-        value: transaction
-      - key: SERVER_RESET_QUERY
-        value: DISCARD ALL
-      - key: MAX_CLIENT_CONN
-        value: 500
-      - key: DEFAULT_POOL_SIZE
-        value: 50
+
+databases:
+  - name: TestDbSpringSecurity
