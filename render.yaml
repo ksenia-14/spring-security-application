@@ -2,11 +2,10 @@ version: '3.1'
 
 services:
   app:
-    container_name: app
     image: 'spring-security-application:latest'
     build:
-      - context: .
-      - dockerfile: Dockerfile
+      context: .
+    container_name: app
     depends_on:
       - db
     environment:
