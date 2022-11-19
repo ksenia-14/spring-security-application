@@ -1,24 +1,11 @@
 services:
   - type: web
+    name: app
+    env: docker
     dockerfilePath: Dockerfile
-    app:
-      image: 'spring-security-application:latest'
-      build:
-        context: .
-      container_name: app
-      depends_on:
-        - db
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/TestDbSpringSecurity
-        - SPRING_DATASOURCE_USERNAME=postgres
-        - SPRING_DATASOURCE_PASSWORD=123
-        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
 databases:
   - name: TestDbSpringSecurity
-    db:
-      image: 'postgres:13.1-alpine'
-      container_name: db
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=123
+    databaseName: TestDbSpringSecurity
+    user: postgres
+    password: 123
