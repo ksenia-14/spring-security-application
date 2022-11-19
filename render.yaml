@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: app
+    name: app-db-render
     env: docker
     dockerfilePath: Dockerfile
     plan: free
