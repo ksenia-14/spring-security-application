@@ -6,6 +6,7 @@ services:
     image: 'spring-security-application:latest'
     build:
       context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
     environment:
