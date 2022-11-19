@@ -3,6 +3,7 @@ services:
     name: app
     env: docker
     dockerfilePath: Dockerfile
+    plan: free
 
 databases:
   - name: TestDbSpringSecurity
