@@ -2,10 +2,9 @@ version: '2'
 
 services:
   app:
+    container_name: spring-security-application
     image: 'spring-security-application:latest'
-    build:
-      context: .
-    container_name: app
+    build: ./
     depends_on:
       - db
     environment:
@@ -20,3 +19,4 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=TestDbSpringSecurity
