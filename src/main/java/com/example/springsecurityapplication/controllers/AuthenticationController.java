@@ -61,7 +61,7 @@ public class AuthenticationController {
         personService.register(person);
         return fieldErrorResponse;
     }
-    
+
 
 /* *********************************************************************************** */
 
