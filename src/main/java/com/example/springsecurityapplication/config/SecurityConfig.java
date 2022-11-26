@@ -71,19 +71,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // для д�
         * logout() - завершение сессии
         * */
         httpSecurity
-//                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/authentication/login", "/authentication/registration", "/error").permitAll()
+                .antMatchers("/api/login", "/api/registration", "/error").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
-//                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/authentication/login")
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/index", true)
-                .failureUrl("/authentication/login?error")
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/authentication/login");
+//                .and()
+//                .formLogin().loginPage("/api/login")
+//                .loginProcessingUrl("/process_login")
+//                .defaultSuccessUrl("/index", true)
+//                .failureUrl("/api/login?error")
+//                .and()
+//                .logout().logoutUrl("/logout").logoutSuccessUrl("/api/login")
+                ;
     }
 
     // настройка аутентификации

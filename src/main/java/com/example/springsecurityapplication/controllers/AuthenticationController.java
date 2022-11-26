@@ -7,15 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Controller
-@RequestMapping("/authentication")
+@RestController
+@RequestMapping("/api")
+@CrossOrigin("http://localhost:3000")
 public class AuthenticationController {
     private final PersonValidator personValidator;
     private final PersonService personService;
@@ -26,23 +24,27 @@ public class AuthenticationController {
         this.personService = personService;
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "authentication/login";
-    }
+
+//    @PostMapping("/add")
+//    public
+
+//    @GetMapping("/login")
+//    public String login() {
+//        return "authentication/login";
+//    }
 
 //    @GetMapping("/registration")
 //    public String registration(Model model) {
 //        model.addAttribute("person", new Person());
 //    }
 
-    @GetMapping("/registration")
-    public String registration(@ModelAttribute("person") Person person) {
-        return "authentication/registration";
-    }
+//    @GetMapping("/registration")
+//    public String registration(@ModelAttribute("person") Person person) {
+//        return "authentication/registration";
+//    }
 
     @PostMapping("/registration")
-    public String resultRegistration(@ModelAttribute("person") @Valid Person person,
+    public String resultRegistration(@RequestBody @Valid Person person,
                                      BindingResult bindingResult) {
         /* Если валидатор возвращает ошибку - помещаем данную ошибку в bindingResult */
         personValidator.validate(person, bindingResult);
