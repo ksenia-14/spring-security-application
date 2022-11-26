@@ -3,48 +3,35 @@ package com.example.springsecurityapplication.errors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.springsecurityapplication.controllers.AuthenticationController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.validation.ConstraintViolationException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ErrorHandlingControllerAdvice {
+public class ControllerErrorHandler extends ResponseEntityExceptionHandler {
 
-    @ResponseBody
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationErrorResponse onConstraintValidationException(
-            ConstraintViolationException e
-    ) {
-        final List<Violation> violations = e.getConstraintViolations().stream()
-                .map(
-                        violation -> new Violation(
-                                violation.getPropertyPath().toString(),
-                                violation.getMessage()
-                        )
-                )
-                .collect(Collectors.toList());
-        return new ValidationErrorResponse(violations);
-    }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ValidationErrorResponse onMethodArgumentNotValidException(
-            MethodArgumentNotValidException e
-    ) {
-        final List<Violation> violations = e.getBindingResult().getFieldErrors().stream()
-                .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
-                .collect(Collectors.toList());
-        return new ValidationErrorResponse(violations);
+        System.out.println("RestControllerAdvice");
+        List<CustomFieldError> fieldErrors = new ArrayList<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            CustomFieldError fieldError = new CustomFieldError();
+            fieldError.setField(((FieldError) error).getField());
+            fieldError.setMessage(error.getDefaultMessage());
+            fieldErrors.add(fieldError);
+        });
+
+        fieldErrorResponse.setFieldErrors(fieldErrors);
+        return new ResponseEntity<>(fieldErrorResponse, status);
     }
 }
