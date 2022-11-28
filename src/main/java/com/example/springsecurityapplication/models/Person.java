@@ -28,8 +28,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(int id, String login, String password) {
-        this.id = id;
+    public Person(String login, String password) {
         this.login = login;
         this.password = password;
     }
