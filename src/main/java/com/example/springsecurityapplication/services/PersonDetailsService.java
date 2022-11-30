@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Optional;
 
@@ -20,10 +21,9 @@ public class PersonDetailsService implements UserDetailsService {
         this.personRepository = personRepository;
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Получае пользователя из таблицы по логину с формы аутентификации
+        // Получаем пользователя из таблицы по логину с формы аутентификации
         Optional<Person> person = personRepository.findByLogin(username);
 
         // Если пользователь не был найден
@@ -31,7 +31,8 @@ public class PersonDetailsService implements UserDetailsService {
         {
             // Выбрасываем исключение что данный пользователь не найден
             // Данное исключение будет поймано Spring Security и сообщение
-            //будет выведено на страницу
+            // будет выведено на страницу
+            System.out.println("Пользователь не найден");
             throw new UsernameNotFoundException("Пользователь не найден");
         }
         return new PersonDetails(person.get());

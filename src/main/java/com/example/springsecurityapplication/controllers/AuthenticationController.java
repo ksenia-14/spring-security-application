@@ -4,23 +4,30 @@ import com.example.springsecurityapplication.errors.CustomFieldError;
 import com.example.springsecurityapplication.errors.FieldErrorResponse;
 import com.example.springsecurityapplication.models.Person;
 import com.example.springsecurityapplication.repositories.PersonRepository;
+import com.example.springsecurityapplication.responses.Response;
+import com.example.springsecurityapplication.responses.UserInfo;
 import com.example.springsecurityapplication.services.PersonDetailsService;
 import com.example.springsecurityapplication.services.PersonService;
 import com.example.springsecurityapplication.util.PersonValidator;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 //@Validated
 @RestController
@@ -45,8 +52,7 @@ public class AuthenticationController {
         this.personRepository = personRepository;
     }
 
-//    @PostMapping(value = "/registration", consumes = "application/json", produces = "application/json")
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    http://localhost:8081/api/registration
     @PostMapping(value = "/registration")
     public FieldErrorResponse resultRegistration(@Valid @RequestBody Person person, BindingResult bindingResult) {
 
@@ -74,51 +80,48 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/login")
-    public FieldErrorResponse resultAuthorization(@Valid @RequestBody Person person) {
+    public Authentication resultAuthorization(@Valid @RequestBody Person person) throws BadCredentialsException, UsernameNotFoundException {
 
-        String login = person.getLogin();
-        String password = passwordEncoder.encode(person.getPassword());
-        Person loginPerson = new Person(login, password);
+        String login = person.getLogin(); // логин
+        String password = person.getPassword(); // пароль
+        // получаем запись найденного пользователя по логину, если он есть
+        UserDetails personFind = personDetailsService.loadUserByUsername(login);
+        String password_encode = personFind.getPassword();
 
-        Optional<Person> personFind = personRepository.findByLogin(loginPerson.getLogin());
-        List<CustomFieldError> fieldErrors = new ArrayList<>();
-        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
-
-        if (personFind.isEmpty()) {
-            CustomFieldError fieldError = new CustomFieldError();
-            fieldError.setField("user");
-            fieldError.setMessage("Пользователь не найден");
-            System.out.println("field: " + fieldError.getField()
-                    + "; message: " + fieldError.getMessage());
-            fieldErrors.add(fieldError);
-            fieldErrorResponse.setFieldErrors(fieldErrors);
-            return fieldErrorResponse;
+        // проверка пароля
+        if (!passwordEncoder.matches(password, password_encode)) {
+            System.out.println("Некорректный пароль");
+            throw new BadCredentialsException("Некорректный пароль");
         }
 
         System.out.println("Ok");
-        return fieldErrorResponse;
+        return new UsernamePasswordAuthenticationToken(personFind, password_encode, Collections.emptyList());
     }
 
-//    @PostMapping("/signin")
-//    public ResponseEntity<?> authenticateuser
-//            (@RequestBody Person loginRequest) {
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Response> handleException(UsernameNotFoundException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new Response("msg: ",exception.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Response> handleException(BadCredentialsException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new Response("msg: ",exception.getMessage()));
+    }
+
+//    @GetMapping("/auth/userinfo")
+//    public ResponseEntity<?> getUserInfo(Principal user){
+//        Person userObj=(Person) personDetailsService.loadUserByUsername(user.getName());
+//// TODO отредактировать UserInfo!
+//        UserInfo userInfo=new UserInfo();
+//        userInfo.setFirstName(userObj.getLogin());
+//        userInfo.setLastName(userObj.getPassword());
+//        userInfo.setRoles(userObj.getRole());
 //
-//        Authentication authentication = authenticationManager
-//                .authenticate
-//                        (new UsernamePasswordAuthenticationToken
-//                                (loginRequest.getUsername(),
-//                                        loginRequest.getPassword()));
-//
-//        SecurityContextHolder.getContext()
-//                .setAuthentication(authentication);
-//        String jwt = jwtUtils.generateJwtToken(authentication);
-//
-//        UserDetailsImpl userDetails = (UserDetailsImpl)
-//                authentication.getPrincipal();
-//
-//        return ResponseEntity
-//                .ok(new JwtResponse(jwt, userDetails.getId(),
-//                        userDetails.getUsername(),
-//                        userDetails.getEmail()));
+//        return ResponseEntity.ok(userInfo);
 //    }
+
 }
