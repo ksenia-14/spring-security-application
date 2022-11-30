@@ -1,8 +1,14 @@
 package com.example.springsecurityapplication.config;
 
+import com.example.springsecurityapplication.responses.Response;
 import com.example.springsecurityapplication.services.PersonDetailsService;
+import com.example.springsecurityapplication.token.JWTAuthenticationFilter;
+import com.example.springsecurityapplication.token.JWTTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -11,70 +17,89 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final PersonDetailsService personDetailsService;
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService) {
-        this.personDetailsService = personDetailsService;
-    }
+    private PersonDetailsService personDetailsService;
+
+    @Autowired
+    private JWTTokenHelper jWTTokenHelper;
+
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     // конфигурация Spring Security
+
+//    @Override
+//    protected void configure(HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity
+//                .cors()
+//                .and()
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/admin").hasRole("ADMIN")
+//                .antMatchers("/api/login", "/api/registration", "/error", "/").permitAll()
+//                .anyRequest().hasAnyRole("USER", "ADMIN")
+//                .and()
+//                .formLogin().loginPage("/api/login")
+//                .loginProcessingUrl("/process_login")
+//                .defaultSuccessUrl("/index", true)
+//                .failureUrl("/api/login?error")
+//                .and()
+//                .logout().logoutUrl("/logout").logoutSuccessUrl("/api/login")
+//                ;
+//    }
+
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        /*
-         * csrf().disable() - отключаем защиту от межсайтовой подделки запросов
-         *
-         * authorizeRequests() - все страницы будут защищены процессом аутентификации
-         *
-         * antMatchers("/admin").hasRole("ADMIN") - страница /admin доступна пользователям
-         * с ролью ADMIN ("ROLE_ADMIN" -> "ROLE_" отбрасывается)
-         *
-         * antMatchers("/authentication/login", "/error").permitAll() - данные страницы
-         * доступны всем пользователям
-         *
-         * anyRequest().hasAnyRole("USER", "ADMIN") - все остальные страницы доступны для
-         * пользователей с ролями USER и ADMIN
-         *
-         * anyRequest().authenticated() - для остальных страниц необходимо вызывать
-         * метод authenticated(), который открывает форму аутентификации
-         *
-         * and() - переход к следующему блоку
-         *
-         * loginPage - на какой url адрес фильтр Spring Security будет отправлять
-         * неатунтифицированного пользователя при входе на защищенную страницу
-         *
-         * loginProcessingUrl - на какой url будут отправляться данные с формы аутентификации
-         *
-         * defaultSuccessUrl - на какой url нужно направить пользователя после успешной
-         * аутентификации
-         *
-         * failureUrl - куда нужно перейти при неверной аутентификации
-         *
-         * logout() - завершение сессии
-         * */
-        httpSecurity
-                .cors()
-                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/api/login", "/api/registration", "/error").permitAll()
-                .anyRequest().hasAnyRole("USER", "ADMIN")
-                .and()
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint).and()
+                .authorizeRequests((request) -> request.antMatchers( "/api/login").permitAll()
+                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
+                .addFilterBefore(new JWTAuthenticationFilter(personDetailsService, jWTTokenHelper),
+                        UsernamePasswordAuthenticationFilter.class)
                 .formLogin().loginPage("/api/login")
                 .loginProcessingUrl("/process_login")
                 .defaultSuccessUrl("/index", true)
-                .failureUrl("/api/login?error")
-                .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/api/login")
+                .failureUrl("/api/login")
                 ;
+
+        http.csrf().disable().cors().and().headers().frameOptions().disable();
+
     }
+
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+//        config.setAllowedMethods(Arrays.asList("*"));
+//        config.setAllowedHeaders(Arrays.asList("*"));
+//        config.setAllowCredentials(true);
+//        config.applyPermitDefaultValues();
+//
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
 
     // настройка аутентификации
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -84,7 +109,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-//        return NoOpPasswordEncoder.getInstance(); // пароль шифровать не нужно
         return new BCryptPasswordEncoder();
     }
 
