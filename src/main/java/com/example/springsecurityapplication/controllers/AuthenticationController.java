@@ -13,6 +13,7 @@ import com.example.springsecurityapplication.token.JWTTokenHelper;
 import com.example.springsecurityapplication.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
@@ -61,13 +63,16 @@ public class AuthenticationController {
     }
 
 //    http://localhost:8081/api/registration
+    /* Регистрация */
     @PostMapping(value = "/registration")
     public FieldErrorResponse resultRegistration(@Valid @RequestBody Person person, BindingResult bindingResult) {
 
+        // валидация полей
         personValidator.validate(person, bindingResult);
         List<CustomFieldError> fieldErrors = new ArrayList<>();
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 
+        // если есть ошибки - вывод сообщений
         if (bindingResult.hasErrors()) {
             System.out.println("Error");
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -82,13 +87,15 @@ public class AuthenticationController {
             fieldErrorResponse.setFieldErrors(fieldErrors);
             return fieldErrorResponse;
         }
+
         System.out.println("Ok");
         personService.register(person);
         return fieldErrorResponse;
     }
 
+    /* Авторизация */
     @PostMapping(value = "/login")
-    public ResponseEntity<?> resultAuthorization(@Valid @RequestBody Person person) throws BadCredentialsException, UsernameNotFoundException, InvalidKeySpecException, NoSuchAlgorithmException, AuthenticationException {
+    public ResponseEntity<?> resultAuthorization(@RequestBody Person person) throws BadCredentialsException, UsernameNotFoundException, InvalidKeySpecException, NoSuchAlgorithmException, AuthenticationException {
 
         String login = person.getLogin(); // логин
         String password = person.getPassword(); // пароль
@@ -105,24 +112,84 @@ public class AuthenticationController {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         String jwtToken = jWTTokenHelper.generateToken(user.getUsername());
 
+
         LoginResponse response = new LoginResponse();
         response.setToken(jwtToken);    // отправляем токен
+        System.out.println("send token: " + jwtToken);
+
+        // обновляем токен
+        updateTokenUser(login, jwtToken);
 
         return ResponseEntity.ok(response);
     }
 
+    /* Выход из системы */
+    @PostMapping(value = "/logout")
+    public void logoutUser(@RequestBody Person person) {
+        updateTokenUser(person.getLogin(), "");
+    }
+
+    /* Обновление токена пользователя */
+    public void updateTokenUser(String login, String jwtToken) {
+        // Находим нужную запись по логину
+        Person updatePerson = personRepository.findByLogin(login).orElseThrow();
+        updatePerson.setToken(jwtToken); // Устанавливаем новое значение
+        personRepository.save(updatePerson); // Сохраняем (обновляем) запись
+    }
+
+    /* Возврат токена */
+    @GetMapping (value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseStatus(HttpStatus.CREATED) Response getToken(HttpServletRequest request) {
+        System.out.println("/token");
+        try {
+            String authToken = jWTTokenHelper.getToken(request);
+            Response response = new Response("token", authToken);
+            return response;
+        } catch (Exception e) {
+            return new Response("error","error");
+        }
+    }
+
+    /* Получение информации о пользователе */
+    @GetMapping("/userinfo")
+    public ResponseEntity<?> getUserInfo(String userName) {
+        System.out.println(userName);
+        Person userObj = (Person) personDetailsService.loadUserByUsername(userName);
+
+//        TODO - отредактировать UserInfo
+        UserInfo userInfo = new UserInfo();
+        userInfo.setFirstName(userObj.getLogin());
+        userInfo.setLastName(userObj.getRole());
+        userInfo.setRoles(userObj.getToken());
+
+        return ResponseEntity.ok(userInfo);
+    }
+
+    /* ОБРАБОТКА ИСКЛЮЧЕНИЙ */
+
+    /* Логина не существует */
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Response> handleException(UsernameNotFoundException exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new Response("msg: ",exception.getMessage()));
+    public FieldErrorResponse handleException(UsernameNotFoundException exception) {
+        List<CustomFieldError> fieldErrors = new ArrayList<>();
+        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
+        CustomFieldError fieldError = new CustomFieldError();
+        fieldError.setField("loginError");
+        fieldError.setMessage(exception.getMessage());
+        fieldErrors.add(fieldError);
+        fieldErrorResponse.setFieldErrors(fieldErrors);
+        return fieldErrorResponse;
     }
 
+    /* Неверный пароль */
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Response> handleException(BadCredentialsException exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new Response("msg: ",exception.getMessage()));
+    public FieldErrorResponse handleException(BadCredentialsException exception) {
+        List<CustomFieldError> fieldErrors = new ArrayList<>();
+        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
+        CustomFieldError fieldError = new CustomFieldError();
+        fieldError.setField("passwordError");
+        fieldError.setMessage(exception.getMessage());
+        fieldErrors.add(fieldError);
+        fieldErrorResponse.setFieldErrors(fieldErrors);
+        return fieldErrorResponse;
     }
-
 }
