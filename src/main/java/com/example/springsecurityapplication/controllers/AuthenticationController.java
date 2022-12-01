@@ -40,7 +40,7 @@ import java.util.List;
 //@Validated
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://localhost:3000")
 public class AuthenticationController {
     private final PersonValidator personValidator;
     private final PersonService personService;

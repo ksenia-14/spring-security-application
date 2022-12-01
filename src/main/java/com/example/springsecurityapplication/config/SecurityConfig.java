@@ -69,7 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .logout().logoutUrl("/api/logout").logoutSuccessUrl("/api/login")
                 ;
-
+        // РАЗРЕШАЕМ ВСЕЕЕЕ НИКАКОГО CORS
+            http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 //        http.csrf().disable().cors().and().headers().frameOptions().disable();
 
     }
