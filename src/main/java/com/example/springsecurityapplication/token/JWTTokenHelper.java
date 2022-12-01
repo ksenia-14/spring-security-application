@@ -15,7 +15,8 @@ import java.util.Date;
 
 @Component
 public class JWTTokenHelper {
-
+	
+	
 	@Value("${jwt.auth.app}")
 	private String appName;
 	
@@ -27,6 +28,8 @@ public class JWTTokenHelper {
 	
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
 
+
+	
 	private Claims getAllClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -39,6 +42,7 @@ public class JWTTokenHelper {
         }
         return claims;
     }
+
 	
 	 public String getUsernameFromToken(String token) {
 	        String username;
@@ -48,10 +52,9 @@ public class JWTTokenHelper {
 	        } catch (Exception e) {
 	            username = null;
 	        }
-		 System.out.println("username " + username);
 	        return username;
 	 }
-
+	 
 	 public String generateToken(String username) throws InvalidKeySpecException, NoSuchAlgorithmException {
 	        
 	        return Jwts.builder()
@@ -106,8 +109,7 @@ public class JWTTokenHelper {
 	  }
 	
 	public String getToken( HttpServletRequest request ) {
-
-		System.out.println("String getToken");
+      
         String authHeader = getAuthHeaderFromHeader( request );
         if ( authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);

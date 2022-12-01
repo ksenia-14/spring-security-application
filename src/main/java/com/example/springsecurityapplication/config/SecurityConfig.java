@@ -53,7 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
+        http
+                .csrf().disable().cors().and().headers().frameOptions().disable()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests((request) -> request.antMatchers( "/api/login","api/registration").permitAll()
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
@@ -67,23 +70,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logout().logoutUrl("/api/logout").logoutSuccessUrl("/api/login")
                 ;
 
-        http.csrf().disable().cors().and().headers().frameOptions().disable();
+//        http.csrf().disable().cors().and().headers().frameOptions().disable();
 
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(Collections.singletonList("*"));
-        config.setAllowedMethods(Arrays.asList("*"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true);
-        config.applyPermitDefaultValues();
-
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+//        config.setAllowedMethods(Arrays.asList("*"));
+//        config.setAllowedHeaders(Arrays.asList("*"));
+//        config.setAllowCredentials(true);
+//        config.applyPermitDefaultValues();
+//
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
 
 //    @Bean
 //    public CorsFilter corsFilter() {

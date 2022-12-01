@@ -1,4 +1,5 @@
 com\example\springsecurityapplication\config\AuthenticationProvider.class
+com\example\springsecurityapplication\config\CorsConfig.class
 com\example\springsecurityapplication\controllers\AuthenticationController.class
 com\example\springsecurityapplication\token\JWTAuthenticationFilter.class
 com\example\springsecurityapplication\responses\Response.class

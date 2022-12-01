@@ -112,7 +112,6 @@ public class AuthenticationController {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         String jwtToken = jWTTokenHelper.generateToken(user.getUsername());
 
-
         LoginResponse response = new LoginResponse();
         response.setToken(jwtToken);    // отправляем токен
         System.out.println("send token: " + jwtToken);
