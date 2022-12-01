@@ -1,4 +1,4 @@
-package com.example.springsecurityapplication.controllers;
+package com.example.springsecurityapplication.controllers.excCont;
 
 import com.example.springsecurityapplication.models.Person;
 import com.example.springsecurityapplication.security.PersonDetails;
