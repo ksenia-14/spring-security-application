@@ -54,55 +54,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .csrf().disable().cors().and().headers().frameOptions().disable()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint).and()
-                .authorizeRequests((request) -> request.antMatchers( "/api/login","api/registration").permitAll()
-                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
-                .addFilterBefore(new JWTAuthenticationFilter(personDetailsService, jWTTokenHelper),
-                        UsernamePasswordAuthenticationFilter.class)
-                .formLogin().loginPage("/api/login")
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/index", true)
-                .failureUrl("/api/login")
-//                .and()
-//                .logout().logoutUrl("/api/logout").logoutSuccessUrl("/api/login")
-                ;
-        // РАЗРЕШАЕМ ВСЕЕЕЕ НИКАКОГО CORS
+            .csrf().disable().cors().and().headers().frameOptions().disable()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint).and()
+            .authorizeRequests((request) -> request.antMatchers( "/api/login","/api/registration").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
+            .addFilterBefore(new JWTAuthenticationFilter(personDetailsService, jWTTokenHelper),
+                    UsernamePasswordAuthenticationFilter.class)
+            .formLogin().loginPage("/api/login")
+            .loginProcessingUrl("/process_login")
+            .defaultSuccessUrl("/index", true)
+            .failureUrl("/api/login")
+//            .and()
+//            .logout().logoutUrl("/api/logout").logoutSuccessUrl("/api/login")
+            ;
+            // РАЗРЕШАЕМ ВСЕЕЕЕ НИКАКОГО CORS
             http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-//        http.csrf().disable().cors().and().headers().frameOptions().disable();
 
     }
-
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowedOriginPatterns(Collections.singletonList("*"));
-//        config.setAllowedMethods(Arrays.asList("*"));
-//        config.setAllowedHeaders(Arrays.asList("*"));
-//        config.setAllowCredentials(true);
-//        config.applyPermitDefaultValues();
-//
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*");
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("POST");
-//        config.addAllowedMethod("GET");
-//        config.addAllowedMethod("DELETE");
-//        config.addAllowedMethod("PUT");
-//        source.registerCorsConfiguration("/**", config);
-//        return new CorsFilter(source);
-//    }
 
     // настройка аутентификации
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
