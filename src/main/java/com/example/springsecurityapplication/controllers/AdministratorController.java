@@ -120,7 +120,6 @@ public class AdministratorController {
         List<CustomFieldError> fieldErrors = new ArrayList<>();
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 
-        System.out.println(product.getPrice());
         // если есть ошибки - вывод сообщений
         // TODO поправить вывод ошибок по категориям
         if (bindingResult.hasErrors()) {
@@ -160,15 +159,13 @@ public class AdministratorController {
         String newSeller = product.getSeller();
         Double newPrice = product.getPrice();
         String newCategory = product.getCategory();
-        System.out.println("newTitle: " + newTitle);
-        System.out.println("newSeller: " + newSeller);
-        System.out.println("newPrice: " + newPrice);
-        System.out.println("newCategory: " + newCategory);
+        String newDescription = product.getDescription();
 
         productEdit.setTitle(newTitle);
         productEdit.setSeller(newSeller);
         productEdit.setPrice(newPrice);
         productEdit.setCategory(newCategory);
+        productEdit.setDescription(newDescription);
 
         productValidator.validate(productEdit, bindingResult);
         List<CustomFieldError> fieldErrors = new ArrayList<>();
