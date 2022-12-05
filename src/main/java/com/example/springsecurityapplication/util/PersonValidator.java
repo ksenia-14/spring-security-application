@@ -27,7 +27,7 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
-        if (personService.findByLogin(person) != null) {
+        if (personService.findByLogin(person.getLogin()) != null) {
             errors.rejectValue("login", "", "Данный логин уже занят");
         }
     }

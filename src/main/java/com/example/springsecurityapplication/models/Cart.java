@@ -9,15 +9,15 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "person_id")
-    private int personId;
+    @OneToOne
+    private Person person;
 
-    @Column(name = "product_id")
-    private int productId;
+    @OneToOne
+    private Product product;
 
-    public Cart(int personId, int productId) {
-        this.personId = personId;
-        this.productId = productId;
+    public Cart(Person person, Product product) {
+        this.person = person;
+        this.product = product;
     }
 
     public Cart() {
@@ -30,17 +30,19 @@ public class Cart {
         this.id = id;
     }
 
-    public int getPersonId() {
-        return personId;
-    }
-    public void setPersonId(int personId) {
-        this.personId = personId;
+    public Person getPerson() {
+        return person;
     }
 
-    public int getProductId() {
-        return productId;
+    public void setPerson(Person personId) {
+        this.person = personId;
     }
-    public void setProductId(int productId) {
-        this.productId = productId;
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

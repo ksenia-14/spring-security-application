@@ -16,7 +16,22 @@ public class Order {
     @ManyToOne(optional = false)
     private Person person;
 
+    @Column(name = "price")
     private float price;
+
+    @Column(name = "number")
+//    private int number;
+    private String number;
+
+    @Column(name = "status")
+    private String status;
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Product getProduct() {
         return product;
@@ -39,13 +54,29 @@ public class Order {
         this.price = price;
     }
 
+    public String getNumber() {
+        return number;
+    }
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Order() {
     }
 
-    public Order(String number, Product product, Person person, float price) {
+    public Order(Product product, Person person, float price, String number, String status) {
         this.product = product;
         this.person = person;
         this.price = price;
+//        this.number = 123456789 + this.id;
+        this.number = number;
+        this.status = status;
     }
 }
