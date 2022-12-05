@@ -7,6 +7,7 @@ import com.example.springsecurityapplication.repositories.PersonRepository;
 import com.example.springsecurityapplication.responses.LoginResponse;
 import com.example.springsecurityapplication.responses.Response;
 import com.example.springsecurityapplication.responses.UserInfo;
+import com.example.springsecurityapplication.security.PersonDetails;
 import com.example.springsecurityapplication.services.PersonDetailsService;
 import com.example.springsecurityapplication.services.PersonService;
 import com.example.springsecurityapplication.token.JWTTokenHelper;
@@ -37,10 +38,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//@Validated
 @RestController
-@RequestMapping("/api")
-//@CrossOrigin("http://localhost:3000")
+@RequestMapping("/api/authentication")
 public class AuthenticationController {
     private final PersonValidator personValidator;
     private final PersonService personService;
@@ -62,7 +61,7 @@ public class AuthenticationController {
         this.jWTTokenHelper = jWTTokenHelper;
     }
 
-//    http://localhost:8081/api/registration
+//    http://localhost:8081/api/authentication/registration
     /* Регистрация */
     @PostMapping(value = "/registration")
     public FieldErrorResponse resultRegistration(@Valid @RequestBody Person person, BindingResult bindingResult) {
@@ -73,6 +72,7 @@ public class AuthenticationController {
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 
         // если есть ошибки - вывод сообщений
+        // TODO поправить вывод ошибок по категориям
         if (bindingResult.hasErrors()) {
             System.out.println("Error");
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -114,7 +114,6 @@ public class AuthenticationController {
 
         LoginResponse response = new LoginResponse();
         response.setToken(jwtToken);    // отправляем токен
-        System.out.println("send token: " + jwtToken);
 
         // обновляем токен
         updateTokenUser(login, jwtToken);
@@ -137,9 +136,9 @@ public class AuthenticationController {
     }
 
     /* Возврат токена */
-    @GetMapping (value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseStatus(HttpStatus.CREATED) Response getToken(HttpServletRequest request) {
-        System.out.println("/token");
+    @GetMapping (value = "/token")
+    public Response getToken(HttpServletRequest request) {
+
         try {
             String authToken = jWTTokenHelper.getToken(request);
             Response response = new Response("token", authToken);
@@ -149,19 +148,18 @@ public class AuthenticationController {
         }
     }
 
-    /* Получение информации о пользователе */
-    @GetMapping("/userinfo")
-    public ResponseEntity<?> getUserInfo(String userName) {
-        System.out.println(userName);
-        Person userObj = (Person) personDetailsService.loadUserByUsername(userName);
-
-//        TODO - отредактировать UserInfo
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFirstName(userObj.getLogin());
-        userInfo.setLastName(userObj.getRole());
-        userInfo.setRoles(userObj.getToken());
-
-        return ResponseEntity.ok(userInfo);
+    /* Возврат роли */
+    @GetMapping (value = "/role")
+    public Response getRole(HttpServletRequest request) {
+        try {
+            String authToken = jWTTokenHelper.getToken(request);
+            String login = jWTTokenHelper.getUsernameFromToken(authToken);
+            Person person = personRepository.findByLogin(login).orElseThrow();
+            Response response = new Response("role", person.getRole());
+            return response;
+        } catch (Exception e) {
+            return new Response("error","error");
+        }
     }
 
     /* ОБРАБОТКА ИСКЛЮЧЕНИЙ */

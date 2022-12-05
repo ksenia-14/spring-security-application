@@ -13,12 +13,12 @@ public class Person {
     private int id;
 
     @NotEmpty(message = "Поле не может быть пустым")
-    @Size(min = 5, max = 100, message = "Поле должно содержать от 5 до 20 символов")
+    @Size(min = 4, max = 100, message = "Поле должно содержать от 4 до 20 символов")
     @Column(name = "login")
     private String login;
 
     @NotEmpty(message = "Поле не может быть пустым")
-    @Size(min = 5, max = 100, message = "Поле должно содержать от 5 до 20 символов")
+    @Size(min = 4, max = 100, message = "Поле должно содержать от 4 до 20 символов")
     @Column(name = "password")
     private String password;
 
@@ -34,6 +34,12 @@ public class Person {
     public Person(String login, String password) {
         this.login = login;
         this.password = password;
+    }
+
+    public Person(String login, String password, String role) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
     }
 
     public int getId() {
