@@ -5,6 +5,7 @@ import com.example.springsecurityapplication.repositories.ProductRepository;
 import com.example.springsecurityapplication.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +27,12 @@ public class ProductController {
     public ResponseEntity<?> getAllProducts() {
         List<Product> productList =  productService.getAllProduct();
         return ResponseEntity.ok(productList);
+    }
+
+    /* Получение товара по id */
+    @GetMapping("/get_product/{id}")
+    public ResponseEntity<?> getProduct(@PathVariable("id") int id) {
+        Product product =  productService.getProductId(id);
+        return ResponseEntity.ok(product);
     }
 }

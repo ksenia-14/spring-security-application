@@ -2,12 +2,15 @@ package com.example.springsecurityapplication.controllers;
 
 import com.example.springsecurityapplication.errors.CustomFieldError;
 import com.example.springsecurityapplication.errors.FieldErrorResponse;
+import com.example.springsecurityapplication.models.Order;
 import com.example.springsecurityapplication.models.Person;
 import com.example.springsecurityapplication.models.Product;
+import com.example.springsecurityapplication.repositories.OrderRepository;
 import com.example.springsecurityapplication.repositories.PersonRepository;
 import com.example.springsecurityapplication.services.PersonDetailsService;
 import com.example.springsecurityapplication.services.PersonService;
 import com.example.springsecurityapplication.services.ProductService;
+import com.example.springsecurityapplication.token.JWTTokenHelper;
 import com.example.springsecurityapplication.util.PersonValidator;
 import com.example.springsecurityapplication.util.ProductValidator;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
@@ -32,8 +36,10 @@ public class AdministratorController {
     private final PersonRepository personRepository;
     private final ProductValidator productValidator;
     private final ProductService productService;
+    private final JWTTokenHelper jWTTokenHelper;
+    private final OrderRepository orderRepository;
 
-    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService) {
+    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository) {
         this.personValidator = personValidator;
         this.personService = personService;
         this.personDetailsService = personDetailsService;
@@ -41,6 +47,8 @@ public class AdministratorController {
         this.personRepository = personRepository;
         this.productValidator = productValidator;
         this.productService = productService;
+        this.jWTTokenHelper = jWTTokenHelper;
+        this.orderRepository = orderRepository;
     }
 
     /* Получение всех пользователей */
@@ -187,6 +195,32 @@ public class AdministratorController {
 
         productService.updateProduct(id, productEdit);
         return fieldErrorResponse;
+    }
+
+    /* ********************************************************** */
+    /* ЗАКАЗЫ */
+    /* ********************************************************** */
+
+    /* Получение всех заказов */
+    @GetMapping("/order/get_all")
+    public ResponseEntity<?> getAllOrders() {
+        List<Order> orderList = orderRepository.findAll();
+        return ResponseEntity.ok(orderList);
+    }
+
+    /* Получение всех заказов */
+    @PostMapping("/order/change_state")
+    public ResponseEntity<?> changeOrderState(@RequestBody Map<String, Object> orderInfo) {
+        String numberOrder = (String) orderInfo.get("number");
+        String stateOrder = (String) orderInfo.get("state");
+        System.out.println(numberOrder);
+        System.out.println(stateOrder);
+        List<Order> orderList = orderRepository.findOrderByNumber(numberOrder);
+        for (Order item : orderList) {
+            item.setStatus(stateOrder);
+            orderRepository.save(item);
+        }
+        return ResponseEntity.ok(orderList);
     }
 }
 
