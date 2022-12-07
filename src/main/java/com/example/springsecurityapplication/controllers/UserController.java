@@ -45,7 +45,9 @@ public class UserController {
         String authToken = jWTTokenHelper.getToken(request);
         String login = jWTTokenHelper.getUsernameFromToken(authToken);
         Person person = personService.findByLogin(login);
+        System.out.println("person:" + person.getId());
         Product product = productService.getProductId(idProduct);
+        System.out.println("prod: " + product.getId() + " " + product.getTitle());
         Cart cart = new Cart(person, product);
         cartRepository.save(cart);
         return ResponseEntity.ok("Ok");
@@ -86,10 +88,11 @@ public class UserController {
         for (Product product: productsList){
             price += product.getPrice();
         }
+        System.out.println(price);
 
         String uuid = UUID.randomUUID().toString();
         for (Product product: productsList){
-            Order newOrder = new Order(product, person, (float) product.getPrice(), uuid, "В обработке");
+            Order newOrder = new Order(product, person, price, uuid, "В обработке");
             orderRepository.save(newOrder);
             cartRepository.deleteCartByProductId(product.getId());
         }

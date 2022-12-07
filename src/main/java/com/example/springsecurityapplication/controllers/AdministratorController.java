@@ -1,5 +1,7 @@
 package com.example.springsecurityapplication.controllers;
 
+import com.example.springsecurityapplication.documentsUpload.FileEntity;
+import com.example.springsecurityapplication.documentsUpload.FileService;
 import com.example.springsecurityapplication.errors.CustomFieldError;
 import com.example.springsecurityapplication.errors.FieldErrorResponse;
 import com.example.springsecurityapplication.models.Order;
@@ -13,16 +15,19 @@ import com.example.springsecurityapplication.services.ProductService;
 import com.example.springsecurityapplication.token.JWTTokenHelper;
 import com.example.springsecurityapplication.util.PersonValidator;
 import com.example.springsecurityapplication.util.ProductValidator;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -38,8 +43,9 @@ public class AdministratorController {
     private final ProductService productService;
     private final JWTTokenHelper jWTTokenHelper;
     private final OrderRepository orderRepository;
+    private final FileService fileService;
 
-    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository) {
+    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository, FileService fileService) {
         this.personValidator = personValidator;
         this.personService = personService;
         this.personDetailsService = personDetailsService;
@@ -49,6 +55,7 @@ public class AdministratorController {
         this.productService = productService;
         this.jWTTokenHelper = jWTTokenHelper;
         this.orderRepository = orderRepository;
+        this.fileService = fileService;
     }
 
     /* Получение всех пользователей */
@@ -122,14 +129,28 @@ public class AdministratorController {
     /* ********************************************************** */
 
     @PostMapping(value = "/product/add")
-    public FieldErrorResponse productAdd(@Valid @RequestBody Product product, BindingResult bindingResult) {
+    public FieldErrorResponse productAdd(
+            @RequestParam("selectedFile") Optional<MultipartFile> file,
+            @Valid @RequestPart("product") String productString,
+            BindingResult bindingResult) throws JSONException, IOException {
+
+        JSONObject jsonProduct= new JSONObject(productString);
+
+        String title = (String) jsonProduct.get("title");
+        String seller = (String) jsonProduct.get("seller");
+        String priceString = (String) jsonProduct.get("price");
+        Double price = Double.valueOf(priceString);
+        String category = (String) jsonProduct.get("category");
+        String description = (String) jsonProduct.get("description");
+
+        Product product = new Product(title,seller,price,category,description);
+
         // валидация полей
         productValidator.validate(product, bindingResult);
         List<CustomFieldError> fieldErrors = new ArrayList<>();
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 
         // если есть ошибки - вывод сообщений
-        // TODO поправить вывод ошибок по категориям
         if (bindingResult.hasErrors()) {
             System.out.println("Error");
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -146,7 +167,16 @@ public class AdministratorController {
         }
 
         System.out.println("Ok");
+
+        if (file.isPresent()) {
+            String idFile = fileService.save(file.get());
+            Optional<FileEntity> savedImg = fileService.getFile(idFile);
+            if (savedImg.isPresent()) {
+                product.setImageId(idFile);
+            }
+        }
         productService.saveProduct(product);
+
         return fieldErrorResponse;
     }
 
@@ -159,15 +189,21 @@ public class AdministratorController {
 
     /* Редактирование продукта по id */
     @PostMapping("/product/edit/{id}")
-    public FieldErrorResponse editProduct(@PathVariable("id") int id, @RequestBody Product product, BindingResult bindingResult) {
+    public FieldErrorResponse editProduct(
+            @PathVariable("id") int id,
+            @RequestParam("selectedFile") Optional<MultipartFile> file,
+            @Valid @RequestPart("product") String productString,
+            BindingResult bindingResult) throws JSONException, IOException {
 
         Product productEdit = productService.getProductId(id);
+        JSONObject jsonProduct= new JSONObject(productString);
+        String newTitle = (String) jsonProduct.get("title");
+        String newSeller = (String) jsonProduct.get("seller");
+        String priceString = (String) jsonProduct.get("price");
+        Double newPrice = Double.valueOf(priceString);
 
-        String newTitle = product.getTitle();
-        String newSeller = product.getSeller();
-        Double newPrice = product.getPrice();
-        String newCategory = product.getCategory();
-        String newDescription = product.getDescription();
+        String newCategory = (String) jsonProduct.get("category");
+        String newDescription = (String) jsonProduct.get("description");
 
         productEdit.setTitle(newTitle);
         productEdit.setSeller(newSeller);
@@ -191,6 +227,14 @@ public class AdministratorController {
             }
             fieldErrorResponse.setFieldErrors(fieldErrors);
             return fieldErrorResponse;
+        }
+
+        if (file.isPresent()) {
+            String idFile = fileService.save(file.get());
+            Optional<FileEntity> savedImg = fileService.getFile(idFile);
+            if (savedImg.isPresent()) {
+                productEdit.setImageId(idFile);
+            }
         }
 
         productService.updateProduct(id, productEdit);
@@ -222,5 +266,6 @@ public class AdministratorController {
         }
         return ResponseEntity.ok(orderList);
     }
+
 }
 

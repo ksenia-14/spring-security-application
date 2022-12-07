@@ -1,5 +1,6 @@
 package com.example.springsecurityapplication.controllers;
 
+import com.example.springsecurityapplication.documentsUpload.FileEntity;
 import com.example.springsecurityapplication.models.Product;
 import com.example.springsecurityapplication.repositories.ProductRepository;
 import com.example.springsecurityapplication.services.ProductService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")

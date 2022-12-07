@@ -1,13 +1,12 @@
 package com.example.springsecurityapplication.models;
 
-import com.sun.istack.NotNull;
-import org.aspectj.bridge.IMessage;
-import org.hibernate.validator.constraints.Range;
+import com.example.springsecurityapplication.documentsUpload.FileEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 @Entity
 @Table(name = "Product")
@@ -27,15 +26,9 @@ public class Product {
     @Column(name = "seller")
     private String seller;
 
-//    @NotEmpty(message = "Поле не может быть пустым")
-//    @Size(min = 1, max = 30, message = "Поле должно содержать от 4 до 30 символов")
-//    @Range(min=1, max=90, message = "Поле должно содержать от 1 до 30 символов")
     @Min(value=1, message="Минимально возможное значение 1.00")
     @Column(name = "price")
     private double price;
-
-//    @ManyToOne(optional = false)
-//    private Category category;
 
     @NotEmpty(message = "Поле не может быть пустым")
     @Column(name = "category")
@@ -44,6 +37,8 @@ public class Product {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "image_id")
+    private String imageId;
 
     public Product() {
     }
@@ -61,6 +56,15 @@ public class Product {
         this.price = price;
         this.category = category;
         this.description = description;
+    }
+
+    public Product(String title, String seller, double price, String category, String description, String imageId) {
+        this.title = title;
+        this.seller = seller;
+        this.price = price;
+        this.category = category;
+        this.description = description;
+        this.imageId = imageId;
     }
 
     public int getId() {
@@ -103,5 +107,12 @@ public class Product {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 }
