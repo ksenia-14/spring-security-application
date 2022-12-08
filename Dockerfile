@@ -10,14 +10,9 @@
 #COPY ${JAR_FILE} app.jar
 #ENTRYPOINT ["java","-jar","/app.jar"]
 
-FROM openjdk:17.0.4-jdk-alpine
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+FROM adoptopenjdk/openjdk17:jre-17.0.4-alpine
+LABEL maintainer="Sunit Chatterjee (developerpod.com)"
+RUN adduser --no-create-home --disabled-password springuser
+USER springuser:springuser
+COPY build/libs/spring-boot-app-*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
-
-#FROM openjdk:17-jdk-slim-buster
-#WORKDIR /app
-#COPY app/build/lib/* build/lib/
-#COPY app/build/libs/app.jar build/
-#WORKDIR /app/build
-#ENTRYPOINT java -jar app.jar
