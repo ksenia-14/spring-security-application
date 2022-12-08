@@ -10,7 +10,7 @@
 #COPY ${JAR_FILE} app.jar
 #ENTRYPOINT ["java","-jar","/app.jar"]
 
-FROM adoptopenjdk/openjdk17:jre-17.0.4-alpine
+FROM openjdk:17-jdk-alpine
 LABEL maintainer="Sunit Chatterjee (developerpod.com)"
 RUN adduser --no-create-home --disabled-password springuser
 USER springuser:springuser
