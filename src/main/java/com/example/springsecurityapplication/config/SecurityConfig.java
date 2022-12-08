@@ -78,28 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    /*
-    *         http
-            .csrf().disable().cors().and().headers().frameOptions().disable()
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPoint).and()
-            .authorizeRequests((request) -> request.antMatchers( "/api/authentication/login","/api/authentication/registration").permitAll()
-            .antMatchers("/api/admin/**").hasRole("ADMIN")
-            .antMatchers("/api/user/**").hasRole("USER")
-            .antMatchers("/api/seller/**").hasRole("SELLER")
-            .anyRequest().hasAnyRole("USER", "ADMIN", "SELLER")
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
-            .addFilterBefore(new JWTAuthenticationFilter(personDetailsService, jWTTokenHelper),
-                             UsernamePasswordAuthenticationFilter.class)
-            .formLogin().loginPage("/api/authentication/login")
-            .loginProcessingUrl("/process_login")
-            .defaultSuccessUrl("/index", true)
-            .failureUrl("/api/login")
-            .and()
-            .logout().logoutUrl("/api/authentication/logout").logoutSuccessUrl("/api/authentication/login")
-            ;*/
-
     // настройка аутентификации
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(personDetailsService)
