@@ -32,7 +32,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdministratorController {
+public class AdminController {
 
     private final PersonValidator personValidator;
     private final PersonService personService;
@@ -45,7 +45,7 @@ public class AdministratorController {
     private final OrderRepository orderRepository;
     private final FileService fileService;
 
-    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository, FileService fileService) {
+    public AdminController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository, FileService fileService) {
         this.personValidator = personValidator;
         this.personService = personService;
         this.personDetailsService = personDetailsService;
