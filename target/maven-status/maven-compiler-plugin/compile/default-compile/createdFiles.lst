@@ -26,7 +26,6 @@ com\example\springsecurityapplication\models\Order.class
 com\example\springsecurityapplication\models\Category.class
 com\example\springsecurityapplication\documentsUpload\FilesController.class
 com\example\springsecurityapplication\errors\CustomFieldError.class
-com\example\springsecurityapplication\controllers\MainController.class
 com\example\springsecurityapplication\repositories\CategoryRepository.class
 com\example\springsecurityapplication\repositories\ProductRepository.class
 com\example\springsecurityapplication\token\JWTTokenHelper.class
