@@ -6,13 +6,8 @@
 #ENTRYPOINT ["java","-jar","/app.jar"]
 
 #FROM openjdk:17-jdk-alpine
-#ARG JAR_FILE=target/*.jar
-#COPY ${JAR_FILE} app.jar
-#ENTRYPOINT ["java","-jar","/app.jar"]
-
-FROM openjdk:17-jdk-alpine
-LABEL maintainer="Sunit Chatterjee (developerpod.com)"
-RUN adduser --no-create-home --disabled-password springuser
-USER springuser:springuser
-COPY build/libs/spring-boot-app-*.jar app.jar
+FROM java:17
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
+
