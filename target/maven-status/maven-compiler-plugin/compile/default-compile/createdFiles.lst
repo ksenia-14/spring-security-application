@@ -17,7 +17,6 @@ com\example\springsecurityapplication\security\PersonDetails.class
 com\example\springsecurityapplication\services\PersonService.class
 com\example\springsecurityapplication\documentsUpload\FileResponse.class
 com\example\springsecurityapplication\token\RestAuthenticationEntryPoint.class
-com\example\springsecurityapplication\controllers\AdministratorController.class
 com\example\springsecurityapplication\services\ProductService.class
 com\example\springsecurityapplication\models\Person.class
 com\example\springsecurityapplication\documentsUpload\RestExceptionHandler.class
