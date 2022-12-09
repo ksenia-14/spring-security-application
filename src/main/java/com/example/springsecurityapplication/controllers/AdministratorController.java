@@ -131,7 +131,8 @@ public class AdministratorController {
 // -----------?
     @PostMapping(value = "/product/add")
     public FieldErrorResponse productAdd(
-            @RequestParam("selectedFile") Optional<MultipartFile> file,
+//            @RequestParam("selectedFile") Optional<MultipartFile> file,
+            @RequestPart("selectedFile") Optional<MultipartFile> file,
             @Valid @RequestPart("product") String productString,
             BindingResult bindingResult) throws JSONException, IOException {
 
