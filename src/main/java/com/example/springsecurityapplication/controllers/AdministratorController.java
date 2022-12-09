@@ -199,15 +199,15 @@ public class AdministratorController {
             BindingResult bindingResult
     ) throws JSONException, IOException {
 
-        Product productEdit = productService.getProductId(id);
-//        JSONObject jsonProduct= new JSONObject(productString);
-//        String newTitle = (String) jsonProduct.get("title");
-//        String newSeller = (String) jsonProduct.get("seller");
-//        String priceString = (String) jsonProduct.get("price");
-//        Double newPrice = Double.valueOf(priceString);
-//
-//        String newCategory = (String) jsonProduct.get("category");
-//        String newDescription = (String) jsonProduct.get("description");
+//        Product productEdit = productService.getProductId(id);
+        JSONObject jsonProduct= new JSONObject(productString);
+        String newTitle = (String) jsonProduct.get("title");
+        String newSeller = (String) jsonProduct.get("seller");
+        String priceString = (String) jsonProduct.get("price");
+        Double newPrice = Double.valueOf(priceString);
+
+        String newCategory = (String) jsonProduct.get("category");
+        String newDescription = (String) jsonProduct.get("description");
 //
 //        productEdit.setTitle(newTitle);
 //        productEdit.setSeller(newSeller);
