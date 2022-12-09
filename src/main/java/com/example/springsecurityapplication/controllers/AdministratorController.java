@@ -195,28 +195,28 @@ public class AdministratorController {
     public FieldErrorResponse editProduct(
             @PathVariable("id") int id,
             @RequestParam("selectedFile") Optional<MultipartFile> file,
-            @RequestPart("product") String productString
-//            BindingResult bindingResult
+            @RequestPart("product") String productString,
+            BindingResult bindingResult
     ) throws JSONException, IOException {
 
         Product productEdit = productService.getProductId(id);
-        JSONObject jsonProduct= new JSONObject(productString);
-        String newTitle = (String) jsonProduct.get("title");
-        String newSeller = (String) jsonProduct.get("seller");
-        String priceString = (String) jsonProduct.get("price");
-        Double newPrice = Double.valueOf(priceString);
-
-        String newCategory = (String) jsonProduct.get("category");
-        String newDescription = (String) jsonProduct.get("description");
-
-        productEdit.setTitle(newTitle);
-        productEdit.setSeller(newSeller);
-        productEdit.setPrice(newPrice);
-        productEdit.setCategory(newCategory);
-        productEdit.setDescription(newDescription);
+//        JSONObject jsonProduct= new JSONObject(productString);
+//        String newTitle = (String) jsonProduct.get("title");
+//        String newSeller = (String) jsonProduct.get("seller");
+//        String priceString = (String) jsonProduct.get("price");
+//        Double newPrice = Double.valueOf(priceString);
+//
+//        String newCategory = (String) jsonProduct.get("category");
+//        String newDescription = (String) jsonProduct.get("description");
+//
+//        productEdit.setTitle(newTitle);
+//        productEdit.setSeller(newSeller);
+//        productEdit.setPrice(newPrice);
+//        productEdit.setCategory(newCategory);
+//        productEdit.setDescription(newDescription);
 
 //        productValidator.validate(productEdit, bindingResult);
-        List<CustomFieldError> fieldErrors = new ArrayList<>();
+//        List<CustomFieldError> fieldErrors = new ArrayList<>();
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 //        if (bindingResult.hasErrors()) {
 //            System.out.println("Error");
