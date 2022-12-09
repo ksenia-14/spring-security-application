@@ -1,63 +1,63 @@
-//package com.example.springsecurityapplication.controllers;
-//
-//import com.example.springsecurityapplication.documentsUpload.FileEntity;
-//import com.example.springsecurityapplication.documentsUpload.FileService;
-//import com.example.springsecurityapplication.errors.CustomFieldError;
-//import com.example.springsecurityapplication.errors.FieldErrorResponse;
-//import com.example.springsecurityapplication.models.Order;
-//import com.example.springsecurityapplication.models.Person;
-//import com.example.springsecurityapplication.models.Product;
-//import com.example.springsecurityapplication.repositories.OrderRepository;
-//import com.example.springsecurityapplication.repositories.PersonRepository;
-//import com.example.springsecurityapplication.services.PersonDetailsService;
-//import com.example.springsecurityapplication.services.PersonService;
-//import com.example.springsecurityapplication.services.ProductService;
-//import com.example.springsecurityapplication.token.JWTTokenHelper;
-//import com.example.springsecurityapplication.util.PersonValidator;
-//import com.example.springsecurityapplication.util.ProductValidator;
-//import org.springframework.boot.configurationprocessor.json.JSONException;
-//import org.springframework.boot.configurationprocessor.json.JSONObject;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.validation.FieldError;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import javax.validation.ConstraintViolation;
-//import javax.validation.ConstraintViolationException;
-//import javax.validation.Valid;
-//import java.io.IOException;
-//import java.util.*;
-//
-//@RestController
-//@RequestMapping("/api/admin")
-//public class AdministratorController {
-//
-//    private final PersonValidator personValidator;
-//    private final PersonService personService;
-//    private final PersonDetailsService personDetailsService;
-//    private final PasswordEncoder passwordEncoder;
-//    private final PersonRepository personRepository;
-//    private final ProductValidator productValidator;
-//    private final ProductService productService;
-//    private final JWTTokenHelper jWTTokenHelper;
-//    private final OrderRepository orderRepository;
-//    private final FileService fileService;
-//
-//    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository, FileService fileService) {
-//        this.personValidator = personValidator;
-//        this.personService = personService;
-//        this.personDetailsService = personDetailsService;
-//        this.passwordEncoder = passwordEncoder;
-//        this.personRepository = personRepository;
-//        this.productValidator = productValidator;
-//        this.productService = productService;
-//        this.jWTTokenHelper = jWTTokenHelper;
-//        this.orderRepository = orderRepository;
-//        this.fileService = fileService;
-//    }
-//
+package com.example.springsecurityapplication.controllers;
+
+import com.example.springsecurityapplication.documentsUpload.FileEntity;
+import com.example.springsecurityapplication.documentsUpload.FileService;
+import com.example.springsecurityapplication.errors.CustomFieldError;
+import com.example.springsecurityapplication.errors.FieldErrorResponse;
+import com.example.springsecurityapplication.models.Order;
+import com.example.springsecurityapplication.models.Person;
+import com.example.springsecurityapplication.models.Product;
+import com.example.springsecurityapplication.repositories.OrderRepository;
+import com.example.springsecurityapplication.repositories.PersonRepository;
+import com.example.springsecurityapplication.services.PersonDetailsService;
+import com.example.springsecurityapplication.services.PersonService;
+import com.example.springsecurityapplication.services.ProductService;
+import com.example.springsecurityapplication.token.JWTTokenHelper;
+import com.example.springsecurityapplication.util.PersonValidator;
+import com.example.springsecurityapplication.util.ProductValidator;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/admin")
+public class AdministratorController {
+
+    private final PersonValidator personValidator;
+    private final PersonService personService;
+    private final PersonDetailsService personDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final PersonRepository personRepository;
+    private final ProductValidator productValidator;
+    private final ProductService productService;
+    private final JWTTokenHelper jWTTokenHelper;
+    private final OrderRepository orderRepository;
+    private final FileService fileService;
+
+    public AdministratorController(PersonValidator personValidator, PersonService personService, PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder, PersonRepository personRepository, ProductValidator productValidator, ProductService productService, JWTTokenHelper jWTTokenHelper, OrderRepository orderRepository, FileService fileService) {
+        this.personValidator = personValidator;
+        this.personService = personService;
+        this.personDetailsService = personDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.personRepository = personRepository;
+        this.productValidator = productValidator;
+        this.productService = productService;
+        this.jWTTokenHelper = jWTTokenHelper;
+        this.orderRepository = orderRepository;
+        this.fileService = fileService;
+    }
+
 //    /* Получение всех пользователей */
 //    @GetMapping("/user/all")
 //    public ResponseEntity<?> getAllUsers() {
@@ -266,6 +266,6 @@
 //        }
 //        return ResponseEntity.ok(orderList);
 //    }
-//
-//}
-//
+
+}
+
