@@ -195,7 +195,7 @@ public class AdministratorController {
     public FieldErrorResponse editProduct(
             @PathVariable("id") int id,
             @RequestParam("selectedFile") Optional<MultipartFile> file,
-            @Valid @RequestPart("product") String productString
+            @RequestPart("product") String productString
 //            BindingResult bindingResult
     ) throws JSONException, IOException {
 
