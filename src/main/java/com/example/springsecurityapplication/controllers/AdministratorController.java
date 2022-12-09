@@ -58,76 +58,76 @@ public class AdministratorController {
         this.fileService = fileService;
     }
 
-//    /* Получение всех пользователей */
-//    @GetMapping("/user/all")
-//    public ResponseEntity<?> getAllUsers() {
-//        List<Person> personList = personRepository.findAll();
-//        return ResponseEntity.ok(personList);
-//    }
-//
-//    /* Удаление пользователя */
-//    @GetMapping("/user/delete/{id}")
-//    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
-//        personService.deleteById(id);
-//        return ResponseEntity.ok("ok");
-//    }
-//
-//    /* Редактирование пользователя по id */
-//    @PostMapping("/user/edit/{id}")
-//    public FieldErrorResponse editUser(@PathVariable("id") int id,
-//                                      @RequestBody Map<String, Object> person, BindingResult bindingResult) throws ConstraintViolationException {
-//        // парсинг json
-//        Person personEdit = personService.findById(id);
-//        String newLogin = (String) person.get("login");
-//        String newRole = (String) person.get("role");
-//
-//        // валидация логина
-//        if (!(personEdit.getLogin().equals(newLogin))) {
-//            personEdit.setLogin(newLogin);
-//            personValidator.validate(personEdit, bindingResult);
-//        }
-//        // валидация роли
-//        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
-//        if (!(personEdit.getRole().equals(newRole))) {
-//            List<CustomFieldError> fieldErrors = new ArrayList<>();
-//            String role = (String) person.get("role");
-//            if ((!Objects.equals(role, "ROLE_ADMIN")) && (!Objects.equals(role, "ROLE_USER")) && (!Objects.equals(role, "ROLE_SELLER"))) {
-//                CustomFieldError fieldError = new CustomFieldError();
-//                fieldError.setField("roleError");
-//                fieldError.setMessage("Такой роли не существует");
-//                fieldErrors.add(fieldError);
-//                fieldErrorResponse.setFieldErrors(fieldErrors);
-//                return fieldErrorResponse;
-//            }
-//        }
-//        // обновление пользователя
-//        personEdit.setLogin(newLogin);
-//        personEdit.setRole(newRole);
-////        personEdit.setPassword(passwordEncoder.encode(person.getPassword()));
-//        personService.updatePerson(id, personEdit);
-//        return fieldErrorResponse;
-//    }
-//
-//    /* Логин не прошел валидацию */
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public  FieldErrorResponse handleException(ConstraintViolationException exception) {
-//        List<CustomFieldError> fieldErrors = new ArrayList<>();
-//        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
-//        CustomFieldError fieldError = new CustomFieldError();
-//        fieldError.setField("loginError");
-//
-//        for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
-//            fieldError.setMessage(violation.getMessage());
-//            fieldErrors.add(fieldError);
-//        }
-//        fieldErrorResponse.setFieldErrors(fieldErrors);
-//        return fieldErrorResponse;
-//    }
-//
-//    /* ********************************************************** */
-//    /* ПРОДУКТЫ */
-//    /* ********************************************************** */
-//
+    /* Получение всех пользователей */
+    @GetMapping("/user/all")
+    public ResponseEntity<?> getAllUsers() {
+        List<Person> personList = personRepository.findAll();
+        return ResponseEntity.ok(personList);
+    }
+
+    /* Удаление пользователя */
+    @GetMapping("/user/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
+        personService.deleteById(id);
+        return ResponseEntity.ok("ok");
+    }
+
+    /* Редактирование пользователя по id */
+    @PostMapping("/user/edit/{id}")
+    public FieldErrorResponse editUser(@PathVariable("id") int id,
+                                      @RequestBody Map<String, Object> person, BindingResult bindingResult) throws ConstraintViolationException {
+        // парсинг json
+        Person personEdit = personService.findById(id);
+        String newLogin = (String) person.get("login");
+        String newRole = (String) person.get("role");
+
+        // валидация логина
+        if (!(personEdit.getLogin().equals(newLogin))) {
+            personEdit.setLogin(newLogin);
+            personValidator.validate(personEdit, bindingResult);
+        }
+        // валидация роли
+        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
+        if (!(personEdit.getRole().equals(newRole))) {
+            List<CustomFieldError> fieldErrors = new ArrayList<>();
+            String role = (String) person.get("role");
+            if ((!Objects.equals(role, "ROLE_ADMIN")) && (!Objects.equals(role, "ROLE_USER")) && (!Objects.equals(role, "ROLE_SELLER"))) {
+                CustomFieldError fieldError = new CustomFieldError();
+                fieldError.setField("roleError");
+                fieldError.setMessage("Такой роли не существует");
+                fieldErrors.add(fieldError);
+                fieldErrorResponse.setFieldErrors(fieldErrors);
+                return fieldErrorResponse;
+            }
+        }
+        // обновление пользователя
+        personEdit.setLogin(newLogin);
+        personEdit.setRole(newRole);
+//        personEdit.setPassword(passwordEncoder.encode(person.getPassword()));
+        personService.updatePerson(id, personEdit);
+        return fieldErrorResponse;
+    }
+
+    /* Логин не прошел валидацию */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public  FieldErrorResponse handleException(ConstraintViolationException exception) {
+        List<CustomFieldError> fieldErrors = new ArrayList<>();
+        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
+        CustomFieldError fieldError = new CustomFieldError();
+        fieldError.setField("loginError");
+
+        for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
+            fieldError.setMessage(violation.getMessage());
+            fieldErrors.add(fieldError);
+        }
+        fieldErrorResponse.setFieldErrors(fieldErrors);
+        return fieldErrorResponse;
+    }
+
+    /* ********************************************************** */
+    /* ПРОДУКТЫ */
+    /* ********************************************************** */
+
 //    @PostMapping(value = "/product/add")
 //    public FieldErrorResponse productAdd(
 //            @RequestParam("selectedFile") Optional<MultipartFile> file,
