@@ -191,14 +191,14 @@ public class AdministratorController {
 
     // --------------------
     /* Редактирование продукта по id */
-    @PostMapping("/product/edit/{id}")
-    public FieldErrorResponse editProduct(
-            @PathVariable("id") int id,
-            @RequestParam("selectedFile") Optional<MultipartFile> file,
-            @Valid @RequestPart("product") String productString,
-            BindingResult bindingResult
-    ) throws JSONException, IOException {
-
+//    @PostMapping("/product/edit/{id}")
+//    public FieldErrorResponse editProduct(
+//            @PathVariable("id") int id,
+//            @RequestParam("selectedFile") Optional<MultipartFile> file,
+//            @Valid @RequestPart("product") String productString,
+//            BindingResult bindingResult
+//    ) throws JSONException, IOException {
+//
 //        Product productEdit = productService.getProductId(id);
 //        JSONObject jsonProduct= new JSONObject(productString);
 //        String newTitle = (String) jsonProduct.get("title");
@@ -217,7 +217,7 @@ public class AdministratorController {
 
 //        productValidator.validate(productEdit, bindingResult);
 //        List<CustomFieldError> fieldErrors = new ArrayList<>();
-        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
+//        FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
 //        if (bindingResult.hasErrors()) {
 //            System.out.println("Error");
 //            List<FieldError> errors = bindingResult.getFieldErrors();
@@ -242,8 +242,8 @@ public class AdministratorController {
 //        }
 //
 //        productService.updateProduct(id, productEdit);
-        return fieldErrorResponse;
-    }
+//        return fieldErrorResponse;
+//    }
 
     /* ********************************************************** */
     /* ЗАКАЗЫ */
