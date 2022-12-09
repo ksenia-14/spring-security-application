@@ -194,9 +194,10 @@ public class AdministratorController {
     @PostMapping("/product/edit/{id}")
     public FieldErrorResponse editProduct(
             @PathVariable("id") int id,
-//            @RequestParam("selectedFile") Optional<MultipartFile> file,
-            @Valid @RequestPart("product") String productString,
-            BindingResult bindingResult) throws JSONException, IOException {
+            @RequestParam("selectedFile") Optional<MultipartFile> file,
+            @Valid @RequestPart("product") String productString
+//            BindingResult bindingResult
+    ) throws JSONException, IOException {
 
         Product productEdit = productService.getProductId(id);
         JSONObject jsonProduct= new JSONObject(productString);
@@ -214,31 +215,31 @@ public class AdministratorController {
         productEdit.setCategory(newCategory);
         productEdit.setDescription(newDescription);
 
-        productValidator.validate(productEdit, bindingResult);
+//        productValidator.validate(productEdit, bindingResult);
         List<CustomFieldError> fieldErrors = new ArrayList<>();
         FieldErrorResponse fieldErrorResponse = new FieldErrorResponse();
-        if (bindingResult.hasErrors()) {
-            System.out.println("Error");
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors ) {
-                CustomFieldError fieldError = new CustomFieldError();
-                fieldError.setField(error.getField());
-                fieldError.setMessage(error.getDefaultMessage());
-                System.out.println("field: " + error.getField()
-                        + "; message: " + error.getDefaultMessage());
-                fieldErrors.add(fieldError);
-            }
-            fieldErrorResponse.setFieldErrors(fieldErrors);
-            return fieldErrorResponse;
-        }
-
-//        if (file.isPresent()) {
-//            String idFile = fileService.save(file.get());
-//            Optional<FileEntity> savedImg = fileService.getFile(idFile);
-//            if (savedImg.isPresent()) {
-//                productEdit.setImageId(idFile);
+//        if (bindingResult.hasErrors()) {
+//            System.out.println("Error");
+//            List<FieldError> errors = bindingResult.getFieldErrors();
+//            for (FieldError error : errors ) {
+//                CustomFieldError fieldError = new CustomFieldError();
+//                fieldError.setField(error.getField());
+//                fieldError.setMessage(error.getDefaultMessage());
+//                System.out.println("field: " + error.getField()
+//                        + "; message: " + error.getDefaultMessage());
+//                fieldErrors.add(fieldError);
 //            }
+//            fieldErrorResponse.setFieldErrors(fieldErrors);
+//            return fieldErrorResponse;
 //        }
+
+        if (file.isPresent()) {
+            String idFile = fileService.save(file.get());
+            Optional<FileEntity> savedImg = fileService.getFile(idFile);
+            if (savedImg.isPresent()) {
+                productEdit.setImageId(idFile);
+            }
+        }
 
         productService.updateProduct(id, productEdit);
         return fieldErrorResponse;
