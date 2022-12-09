@@ -232,13 +232,13 @@ public class AdministratorController {
             return fieldErrorResponse;
         }
 
-//        if (file.isPresent()) {
-//            String idFile = fileService.save(file.get());
-//            Optional<FileEntity> savedImg = fileService.getFile(idFile);
-//            if (savedImg.isPresent()) {
-//                productEdit.setImageId(idFile);
-//            }
-//        }
+        if (file.isPresent()) {
+            String idFile = fileService.save(file.get());
+            Optional<FileEntity> savedImg = fileService.getFile(idFile);
+            if (savedImg.isPresent()) {
+                productEdit.setImageId(idFile);
+            }
+        }
 
         productService.updateProduct(id, productEdit);
         return fieldErrorResponse;
