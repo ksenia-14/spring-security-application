@@ -1,6 +1,6 @@
 # Интернет-магазин
 
-## Программная часть
+## Программная часть 
 Frontend (JavaScript, React): https://github.com/ksenia-14/frontend-security
 
 Backend (Java, Spring): https://github.com/ksenia-14/SpringSecurityApplication
